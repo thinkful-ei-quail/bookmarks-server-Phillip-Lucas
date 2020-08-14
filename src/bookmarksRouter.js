@@ -35,12 +35,36 @@ bookmarksRouter
   });
 
 bookmarksRouter
-  .route('/:id')
+  .route('/:bookmark_id')
   .get((req, res) => {
-    // GET HERE
+    const {bookmark_id} = req.params
+    const bookmark = bookmarkStore.find(bm => bm.id === bookmark_id)
+
+    if(!bookmark) {
+      return res
+        .status(404)
+        .send('404 Not Found')
+    }
+
+    res.json(bookmark);
+
   })
   .delete((req, res) => {
-    // DELETE HERE
+    const {bookmark_id} = req.params;
+    const bookmarkIndex = bookmarkStore.findIndex(bm => bm.id === bookmark_id);
+
+    if(bookmarkIndex === -1) {
+      return res
+        .status(404)
+        .send('Bookmark Not Found')
+    };
+
+    bookmarkStore.splice(bookmarkIndex,1);
+
+    res
+    .status(204)  
+    .send(`Bookmark ${bookmark_id} has been deleted`)
+
   });
 
 module.exports = { bookmarksRouter };
